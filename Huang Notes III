@@ -1,0 +1,72 @@
+III. ROAD NETWORK EMBEDDING MODEL
+
+III-A state the problem
+what is a road network?
+is a weighted undirected graph G=(V,E,W) where road joints and segments 
+are modeled as graph vertices and edges respectively
+find shortest path?
+a path is a sequence of adjacent edges between two vertices. Such as
+P vs-vt = (ev1-v2, ev2-v3 ... evt-1-vt)
+P*vs-vt is a shortest one, how to traverse from vs to vt on a road network
+we need to answer the shortest path distance, denoted as
+o(vs,vt) = o(p*vs,vt) = summation from(evi-vj in p*vs-vt) of weight vi-vj
+
+III-B introduction to vertices embedding model
+fist, if we want to show all shortest distances between vertices we can do it
+with a matrix with size |V|x|V| but in space cost is impractical O(|V|**2), very
+large for RN with millions vertices.
+Therefore, the author propose to **embed** all vertices into a d-dimensional
+space Rd and utilize the embedding with some metric or function to represent
+shortest-path distances.
+The author uses Lp-distance as metric (approximate method with less than 1% of error)
+that is how Road Network Vertex Embedding are created (RNE).
+given a RN G=(V,E,W) we embed each vertex in V into a d-dimensional space as a vector and 
+we denote the embedding matrix as M = {vec1,vec2,...,vecn}
+For a query from vs to vt we use Lp-distance of the vector pair to approximate 
+shortest path distance, such that:
+ô(vs,vt) = ||vecs - vect||p = ||M[s] - M[t]||p
+the performance is evaluated by the rate between o() and ô() measured as absolute error
+and relative error
+eabs(vs,vt) = |ô(vs,vt) - o(vs,vt)|
+erel(vs,vt) = |ô(vs,vt) - o(vs,vt)|/o(vs,vt)
+
+III-C why Lp-distance and why p=1 -- L1 Manhattan distance is used
+Lp-distance has the following properties
+non-negativity
+symmetry
+triangle inequality
+**prove**
+it is preferable over L2 Euclidian because of linearity (figure 2) **research**
+another advantage is the freedom space for a veck (an intermediate vertex on a shortest path). The reason is that L1 has stronger representation ability than Lp (p bigger than 1) in embedding shortest paths of a planar graph (review 3,7,9,15,18,19,24) (figure 3)
+
+III-D how to train it
+The RNE model will generate a |V|x d matrix, where we want to minimize the absolute error of |ô(vs,vt) - o(vs,vt)|.
+Focusing on that, we select a training dataset consisting of shortest distances of vertex pairs S={(vs,vt,o(vs,vt))} and then minimize the square approximating error:
+minimize: summation from (all vs,vt,o(vs,vt) from S) of (| |vecs - vect|L1 - o(vs,vt)|**2)
+the Training Function has the learning rate alpha, the matrix M and the dataset S
+for every item in S we calculate the loss function aka squeare approximating error
+and update the values of the matrix for the start and finishing points by the partial derivative of the Loss/M[s] times the learning rate (to get a small value from the rate of change)
+finally, the author mentions that we can also randomly select a set of vextex pairs and use a Training function to learn the embedding matrix M, however, this would be hard to converge because vector space is too sparse and "many vertex embeddings can not be fitted into proper realtive position in Rd"
+Also, the training samples can not be selected at random because not all pairs of vertex in |V| provides valuable information, in addition, it is also not a good idea to train in all possible pairs as it would be |V|**2 and so large it would impact on the query performance.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,16 @@
+IV. Hierarchical RNE Model
+
+the basic RNE is a shallow embedding model:
+this means that each vertex in the RN gets a separate vector in the embedding space, without any deeper structural learning. This approach is called "embedding lookup," which means that once you have learned the embedding, retrieving a vector for a vertex is simply looking up that vector from the matrix.
+now the author says that because it is shallow, it lacks parameter sharin and generalization:
+this means that each vertex gets its own embedding vector and is learnt separetely
+
+IV-A
+We are going to partitionate the graph G =(V,E,W) such as we get sub-partitions such that every vertex, edge and weight is correctly separeted and aiming to minimize the cut edges and maintaining sub partitions of similar sizes.
+cut edges:
+This way of partioning makes that vertices from the same sub-graph are more close than vertices from different sub-graphs.
+To be able to make this partition, that is a NP-hard problem (read 17), the author uses a multi-phase graph partition algorithm (also 17) in each level (figure 4).
+It has the representation vl,i (in level l and in position i)
+
+IV-B
+
